@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Education Sentiment Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.1.9/Recharts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.16.0/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        import React, { useState } from 'react';
+import { ResponsiveContainer, Treemap, Tooltip, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
+
+const AdvancedVisualization = () => {
+  // 데이터 처리
+  const rawData = [
+    "대분류,중분류,감정",
+    "수업총평,기타,보통",
+    "수업,수업진행 및 관리,보통",
+    "수업총평,긍정",
+    "수업,과제 및 시험,부정",
+    "수업,수업내용,부정",
+    "수업총평,기타,부정",
+    "수업총평,교수에 대한 인사,보통",
+    "수업,수업내용,긍정",
+    "수업총평,기타,긍정",
+    "수업총평,기타,긍정",
+    "수업,수업진행 및 관리,긍정",
+    "수업,수업내용,보통",
+    "교수자,수업역량,긍정",
+    "수업총평,교수에 대한 인사,보통",
+    "수업,수업내용,보통",
+    "수업,수업진행 및 관리,부정",
+    "수업,수업내용,긍정",
+    "수업,수업내용,긍정",
+    "수업,수업내용,부정",
+    "수업,수업설계,보통",
+    "교수자,수업역량,긍정",
+    "수업총평,기타,긍정",
+    "수업총평,기타,긍정",
+    "수업,과제 및 시험,보통",
+    "수업총평,기타,보통",
+    "수업총평,기타,긍정",
+    "수업총평,기타,보통",
+    "교수자,개인적 특성,긍정",
+    "교수자,수업역량,긍정",
+    "수업총평,기타,긍정",
+    "수업총평,기타,긍정",
+    "수업총평,기타,보통",
+    "수업총평,기타,긍정",
+    "수업,수업내용,보통",
+    "수업,수업진행 및 관리,보통",
+    "수업,과제 및 시험,긍정",
+    "수업,교수방법,보통",
+    "수업총평,교수에 대한 인사,긍정",
+    "수업,교수방법,긍정",
+    "수업,수업내용,긍정",
+    "교수자,학생지도 및 관계,긍정",
+    "교수자,개인적 특성,긍정",
+    "수업총평,교수에 대한 인사,긍정",
+    "수업,교수매체,긍정",
+    "수업,수업진행 및 관리,긍정",
+    "교수자,개인적 특성,긍정",
+    "교수자,학생지도 및 관계,긍정",
+    "교수자,성실 및 열정,긍정",
+    "수업,수업진행 및 관리,긍정",
+    "교수자,수업역량,긍정",
+    "수업,교수방법,긍정",
+    "수업총평,기타,긍정",
+    "수업총평,교수에 대한 인사,긍정",
+    "교수자,개인적 특성,긍정",
+    "교수자,학생지도 및 관계,긍정",
+    "교수자,개인적 특성,긍정",
+    "교수자,수업,긍정",
+    "교수자,교수에 대한 인사,보통",
+    "교수자,수업역량,긍정",
+    "수업,교수방법,긍정",
+    "수업,수업진행 및 관리,긍정",
+    "시설 및 환경,강의실,부정",
+    "수업총평,기타,긍정",
+    "수업,과제 및 시험,부정",
+    "수업,교수방법,긍정",
+    "수업,수업진행 및 관리,부정",
+    "교수자,성실 및 열정,긍정",
+    "교수자,개인적 특성,긍정",
+    "수업,수업진행 및 관리,부정",
+    "교수자,수업역량,긍정",
+    "수업,수업내용,긍정",
+    "수업,과제 및 시험,부정",
+    "수업,수업진행 및 관리,보통",
+    "수업총평,교수에 대한 인사,보통",
+    "수업총평,기타,긍정",
+    "수업,수업내용,긍정",
+    "수업,교수매체,긍정",
+    "수업총평,기타,긍정",
+    "수업,수업내용,긍정",
+    "교수자,수업역량,긍정",
+    "교수자,수업역량,긍정",
+    "수업총평,기타,보통",
+    "수업,수업내용,긍정",
+    "수업,교수매체,긍정",
+    "수업,교수매체,긍정",
+    "수업총평,기타,보통",
+    "수업총평,교수에 대한 인사,보통",
+    "교수자,성실 및 열정,긍정",
+    "교수자,수업역량,부정",
+    "수업,수업내용,부정",
+    "교수자,학생지도 및 관계,긍정",
+    "교수자,성실 및 열정,긍정",
+    "교수자,개인적 특성,긍정",
+    "수업,교수매체,부정",
+    "수업,수업내용,긍정",
+    "교수자,학생지도 및 관계,긍정",
+    "수업,교수매체,부정",
+    "수업총평,교수에 대한 인사,보통",
+    "교수자,성실 및 열정,긍정",
+    "수업,교수매체,부정",
+    "교수자,수업역량,긍정",
+    "수업총평,교수에 대한 인사,보통",
+    "교수자,학생지도 및 관계,긍정",
+    "수업총평,교수에 대한 인사,보통",
+    "수업총평,기타,긍정",
+    "교수자,개인적 특성,긍정",
+    "교수자,수업역량,긍정",
+    "수업총평,기타,긍정",
+    "수업,수업내용,긍정"
+  ];
+
+  // 데이터 파싱
+  const parsedData = rawData.slice(1).map(line => {
+    const parts = line.split(',');
+    return {
+      대분류: parts[0],
+      중분류: parts.length > 2 ? parts[1] : "미분류",
+      감정: parts.length > 2 ? parts[2] : parts[1]
+    };
+  });
+
+  // 감정별 색상 설정
+  const sentimentColors = {
+    '긍정': '#36A2EB',
+    '보통': '#FFCE56',
+    '부정': '#FF6384'
+  };
+
+  // 감정별 통계
+  const sentimentCount = parsedData.reduce((acc, item) => {
+    if (!acc[item.감정]) acc[item.감정] = 0;
+    acc[item.감정]++;
+    return acc;
+  }, {});
+
+  // 대분류별 통계
+  const categoryCount = {};
+  parsedData.forEach(item => {
+    if (!categoryCount[item.대분류]) {
+      categoryCount[item.대분류] = { 긍정: 0, 보통: 0, 부정: 0, total: 0 };
+    }
+    categoryCount[item.대분류][item.감정]++;
+    categoryCount[item.대분류].total++;
+  });
+
+  // 중분류별 통계
+  const subcategoryCount = {};
+  parsedData.forEach(item => {
+    const key = `${item.대분류}-${item.중분류}`;
+    if (!subcategoryCount[key]) {
+      subcategoryCount[key] = { 
+        대분류: item.대분류, 
+        중분류: item.중분류, 
+        긍정: 0, 
+        보통: 0, 
+        부정: 0, 
+        total: 0,
+        name: item.중분류,
+        category: item.대분류
+      };
+    }
+    subcategoryCount[key][item.감정]++;
+    subcategoryCount[key].total++;
+  });
+
+  // 트리맵 데이터 구성
+  const treemapData = Object.values(subcategoryCount).map(item => ({
+    name: item.중분류,
+    category: item.대분류,
+    size: item.total,
+    긍정비율: Math.round((item.긍정 / item.total) * 100),
+    보통비율: Math.round((item.보통 / item.total) * 100),
+    부정비율: Math.round((item.부정 / item.total) * 100),
+    value: item.total,
+    긍정: item.긍정,
+    보통: item.보통,
+    부정: item.부정
+  }));
+
+  // 도넛 차트 데이터
+  const pieData = Object.entries(sentimentCount).map(([sentiment, count]) => ({
+    name: sentiment,
+    value: count,
+    color: sentimentColors[sentiment]
+  }));
+
+  // 레이더 차트 데이터
+  const radarData = Object.entries(categoryCount).map(([category, stats]) => ({
+    subject: category,
+    긍정률: Math.round((stats.긍정 / stats.total) * 100),
+    보통률: Math.round((stats.보통 / stats.total) * 100),
+    부정률: Math.round((stats.부정 / stats.total) * 100),
+    긍정: stats.긍정,
+    보통: stats.보통,
+    부정: stats.부정,
+    total: stats.total
+  }));
+
+  // 탭 상태 관리
+  const [activeTab, setActiveTab] = useState('treemap');
+
+  // 트리맵 색상 설정
+  const getTreemapColor = (item) => {
+    // 긍정 비율이 높으면 파란색, 부정 비율이 높으면 빨간색, 그 외 노란색
+    if (item.긍정비율 > 60) return 'rgba(54, 162, 235, 0.8)';
+    if (item.부정비율 > 40) return 'rgba(255, 99, 132, 0.8)';
+    return 'rgba(255, 206, 86, 0.8)';
+  };
+
+  // 선택된 대분류
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // 필터링된 트리맵 데이터
+  const filteredTreemapData = selectedCategory === 'all' 
+    ? treemapData 
+    : treemapData.filter(item => item.category === selectedCategory);
+
+  return (
+    <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-lg">
+      <h1 className="text-2xl font-bold mb-6 text-center text-indigo-800">교육 피드백 감정 분석 대시보드</h1>
+      
+      {/* 총 통계 요약 */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-white p-4 rounded-lg shadow text-center">
+          <div className="text-4xl font-bold text-blue-500">{sentimentCount.긍정 || 0}</div>
+          <div className="text-sm text-gray-500">긍정 평가</div>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow text-center">
+          <div className="text-4xl font-bold text-yellow-500">{sentimentCount.보통 || 0}</div>
+          <div className="text-sm text-gray-500">보통 평가</div>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow text-center">
+          <div className="text-4xl font-bold text-red-500">{sentimentCount.부정 || 0}</div>
+          <div className="text-sm text-gray-500">부정 평가</div>
+        </div>
+      </div>
+      
+      {/* 탭 네비게이션 */}
+      <div className="flex justify-center mb-6">
+        <div className="inline-flex rounded-md shadow-sm" role="group">
+          <button
+            onClick={() => setActiveTab('treemap')}
+            className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+              activeTab === 'treemap' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            트리맵
+          </button>
+          <button
+            onClick={() => setActiveTab('donut')}
+            className={`px-4 py-2 text-sm font-medium ${
+              activeTab === 'donut' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            도넛 차트
+          </button>
+          <button
+            onClick={() => setActiveTab('radar')}
+            className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
+              activeTab === 'radar' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            레이더 차트
+          </button>
+        </div>
+      </div>
+      
+      {/* 대분류 필터 */}
+      {activeTab === 'treemap' && (
+        <div className="mb-4 flex justify-center">
+          <div className="inline-flex rounded-md shadow-sm" role="group">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+                selectedCategory === 'all' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              전체
+            </button>
+            {Object.keys(categoryCount).map((category, index) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 text-sm font-medium ${
+                  selectedCategory === category ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                } ${index === Object.keys(categoryCount).length - 1 ? 'rounded-r-lg' : ''}`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* 트리맵 시각화 */}
+      {activeTab === 'treemap' && (
+        <div className="bg-white p-4 rounded-lg shadow mb-6">
+          <h2 className="text-lg font-semibold mb-4 text-center text-gray-700">
+            {selectedCategory === 'all' ? '전체 중분류별 감정 분포' : `${selectedCategory}의 중분류별 감정 분포`}
+          </h2>
+          <div className="text-sm text-gray-500 mb-2 text-center">
+            각 블록의 크기는 데이터 수, 색상은 감정 분포를 나타냅니다 (파란색: 긍정적, 노란색: 중립적, 빨간색: 부정적)
+          </div>
+          <ResponsiveContainer width="100%" height={400}>
+            <Treemap
+              data={filteredTreemapData}
+              dataKey="value"
+              aspectRatio={4/3}
+              stroke="#fff"
+              fill="#8884d8"
+              content={({
+                x, y, width, height, name, category, 긍정, 보통, 부정, 긍정비율, 보통비율, 부정비율
+              }) => {
+                return (
+                  <g>
+                    <rect
+                      x={x}
+                      y={y}
+                      width={width}
+                      height={height}
+                      fill={getTreemapColor({긍정비율, 부정비율})}
+                      stroke="#fff"
+                    />
+                    {width > 50 && height > 30 && (
+                      <>
+                        <text x={x + width / 2} y={y + height / 2 - 10} textAnchor="middle" fill="#fff" fontSize={12} fontWeight="bold">
+                          {name}
+                        </text>
+                        <text x={x + width / 2} y={y + height / 2 + 10} textAnchor="middle" fill="#fff" fontSize={10}>
+                          {`긍정: ${긍정비율}% / 부정: ${부정비율}%`}
+                        </text>
+                      </>
+                    )}
+                  </g>
+                );
+              }}
+            >
+              <Tooltip 
+                content={({ payload }) => {
+                  if (payload && payload.length > 0) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-white p-2 shadow rounded border">
+                        <p className="font-bold">{`${data.category} > ${data.name}`}</p>
+                        <p>{`전체 데이터: ${data.value}개`}</p>
+                        <p>{`긍정: ${data.긍정}개 (${data.긍정비율}%)`}</p>
+                        <p>{`보통: ${data.보통}개 (${data.보통비율}%)`}</p>
+                        <p>{`부정: ${data.부정}개 (${data.부정비율}%)`}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+            </Treemap>
+          </ResponsiveContainer>
+        </div>
+      )}
+      
+      {/* 도넛 차트 시각화 */}
+      {activeTab === 'donut' && (
+        <div className="bg-white p-4 rounded-lg shadow mb-6">
+          <h2 className="text-lg font-semibold mb-4 text-center text-gray-700">전체 감정 분포</h2>
+          <ResponsiveContainer width="100%" height={400}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={120}
+                paddingAngle={5}
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                labelLine={false}
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value, name) => [`${value}개 (${Math.round(value / parsedData.length * 100)}%)`, name]}
+              />
+              <Legend formatter={(value) => value} />
+            </PieChart>
+          </ResponsiveContainer>
+          
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            {Object.entries(categoryCount).map(([category, stats]) => (
+              <div key={category} className="bg-gray-50 p-3 rounded-md">
+                <h3 className="font-medium text-gray-700 mb-2">{category}</h3>
+                <div className="flex h-6 overflow-hidden rounded-full bg-gray-200">
+                  <div 
+                    className="bg-blue-500 h-full" 
+                    style={{width: `${Math.round((stats.긍정 / stats.total) * 100)}%`}}
+                    title={`긍정: ${stats.긍정}개`}
+                  ></div>
+                  <div 
+                    className="bg-yellow-400 h-full" 
+                    style={{width: `${Math.round((stats.보통 / stats.total) * 100)}%`}}
+                    title={`보통: ${stats.보통}개`}
+                  ></div>
+                  <div 
+                    className="bg-red-400 h-full" 
+                    style={{width: `${Math.round((stats.부정 / stats.total) * 100)}%`}}
+                    title={`부정: ${stats.부정}개`}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs mt-1">
+                  <span>긍정 {Math.round((stats.긍정 / stats.total) * 100)}%</span>
+                  <span>보통 {Math.round((stats.보통 / stats.total) * 100)}%</span>
+                  <span>부정 {Math.round((stats.부정 / stats.total) * 100)}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* 레이더 차트 시각화 */}
+      {activeTab === 'radar' && (
+        <div className="bg-white p-4 rounded-lg shadow mb-6">
+          <h2 className="text-lg font-semibold mb-4 text-center text-gray-700">대분류별 감정 분포</h2>
+          <div className="text-sm text-gray-500 mb-2 text-center">
+            각 대분류에 대한 긍정/보통/부정 감정 비율을 레이더 차트로 표시합니다
+          </div>
+          <ResponsiveContainer width="100%" height={400}>
+            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+              <PolarGrid />
+              <PolarAngleAxis dataKey="subject" />
+              <PolarRadiusAxis angle={30} domain={[0, 100]} />
+              <Radar name="긍정률" dataKey="긍정률" stroke="#36A2EB" fill="#36A2EB" fillOpacity={0.6} />
+              <Radar name="보통률" dataKey="보통률" stroke="#FFCE56" fill="#FFCE56" fillOpacity={0.6} />
+              <Radar name="부정률" dataKey="부정률" stroke="#FF6384" fill="#FF6384" fillOpacity={0.6} />
+              <Legend />
+              <Tooltip
+                formatter={(value, name, props) => {
+                  const data = props.payload;
+                  const sentiment = name.replace('률', '');
+                  return [`${value}% (${data[sentiment]}개)`, name];
+                }}
+                labelFormatter={(label) => `${label} (총 ${radarData.find(d => d.subject === label).total}개)`}
+              />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      
+      <div className="text-sm text-gray-500 text-center">
+        * 전체 데이터 수: {parsedData.length}개
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedVisualization;
+
+        ReactDOM.render(<AdvancedVisualization />, document.getElementById('root'));
+    </script>
+</body>
+</html>
